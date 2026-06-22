@@ -1,5 +1,4 @@
 ---
-
 description: "Implementation tasks for the Scrapy Story Spider feature"
 ---
 
@@ -30,10 +29,10 @@ description: "Implementation tasks for the Scrapy Story Spider feature"
 
 **Purpose**: Project initialization and Scrapy project scaffolding
 
-- [ ] T001 Initialize Python project dependencies via `uv add scrapy sqlalchemy sqlalchemy-utils` in `pyproject.toml` at repo root
-- [ ] T001a Run `uv sync` to verify dependencies install cleanly before proceeding to scaffolding
-- [ ] T002 Run `scrapy startproject hn_pipeline` at repo root, then manually restructure the generated directory to match plan.md layout (items.py, pipelines.py, middlewares.py, models.py, db.py, settings.py, spiders/story_spider.py)
-- [ ] T003 Add `hn_stories.db` and `hn_stories.db-journal` to `.gitignore` at repo root
+- [x] T001 Initialize Python project dependencies via `uv add scrapy sqlalchemy sqlalchemy-utils` in `pyproject.toml` at repo root
+- [x] T001a Run `uv sync` to verify dependencies install cleanly before proceeding to scaffolding
+- [x] T002 Run `scrapy startproject hn_pipeline` at repo root, then manually restructure the generated directory to match plan.md layout (items.py, pipelines.py, middlewares.py, models.py, db.py, settings.py, spiders/story_spider.py)
+- [x] T003 Add `hn_stories.db` and `hn_stories.db-journal` to `.gitignore` at repo root
 
 ---
 

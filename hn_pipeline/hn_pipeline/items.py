@@ -6,7 +6,12 @@
 import scrapy
 
 
-class HnPipelineItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+class StoryItem(scrapy.Item):
+    hn_id = scrapy.Field()
+    title = scrapy.Field()
+    url = scrapy.Field()
+    domain = scrapy.Field()
+    points = scrapy.Field()
+    submitted_by = scrapy.Field()
+    submitted_ago = scrapy.Field()
+    comment_count = scrapy.Field()

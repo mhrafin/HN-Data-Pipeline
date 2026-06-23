@@ -32,7 +32,7 @@ description: "Implementation tasks for the Scrapy Story Spider feature"
 - [x] T001 Initialize Python project dependencies via `uv add scrapy sqlalchemy sqlalchemy-utils` in `pyproject.toml` at repo root
 - [x] T001a Run `uv sync` to verify dependencies install cleanly before proceeding to scaffolding
 - [x] T002 Run `scrapy startproject hn_pipeline` at repo root, then manually restructure the generated directory to match plan.md layout (items.py, pipelines.py, middlewares.py, models.py, db.py, settings.py, spiders/story_spider.py)
-- [x] T003 Add `hn_stories.db` and `hn_stories.db-journal` to `.gitignore` at repo root
+- [x] T003 Add `hn.db` and `hn.db-journal` to `.gitignore` at repo root
 
 ---
 
@@ -42,10 +42,10 @@ description: "Implementation tasks for the Scrapy Story Spider feature"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Create SQLAlchemy ORM models (Story, StoryDedupLog) with all fields, constraints, and indexes per data-model.md in `hn_pipeline/models.py`
-- [ ] T005 [P] Create Scrapy Item definitions (StoryItem) with all fields per spider-contract.md in `hn_pipeline/items.py`
-- [ ] T006 Create database engine/session management with `create_engine` from `DATABASE_URL` setting, session factory, and `init_db()` in `hn_pipeline/db.py`
-- [ ] T007 [P] Configure Scrapy settings in `hn_pipeline/settings.py` including `DOWNLOAD_DELAY=30`, `ROBOTSTXT_OBEY=True`, `CONCURRENT_REQUESTS_PER_DOMAIN=1`, `RANDOMIZE_DOWNLOAD_DELAY=False`, `DATABASE_URL`, `DEFAULT_CRAWL_DEPTH=1`, and `STORYSPIDER_START_PAGE="/news"`
+- [x] T004 Create SQLAlchemy ORM models (Story, StoryDedupLog) with all fields, constraints, and indexes per data-model.md in `hn_pipeline/models.py`
+- [x] T005 [P] Create Scrapy Item definitions (StoryItem) with all fields per spider-contract.md in `hn_pipeline/items.py`
+- [x] T006 Create database engine/session management with `create_engine` from `DATABASE_URL` setting, session factory, and `init_db()` in `hn_pipeline/db.py`
+- [x] T007 [P] Configure Scrapy settings in `hn_pipeline/settings.py` including `DOWNLOAD_DELAY=30`, `ROBOTSTXT_OBEY=True`, `CONCURRENT_REQUESTS_PER_DOMAIN=1`, `RANDOMIZE_DOWNLOAD_DELAY=False`, `DATABASE_URL`, `DEFAULT_CRAWL_DEPTH=1`, and `STORYSPIDER_START_PAGE="/news"`
 
 **Checkpoint**: Foundation ready — database models, items, engine, and settings are all defined
 
@@ -55,7 +55,7 @@ description: "Implementation tasks for the Scrapy Story Spider feature"
 
 **Goal**: The scraper fetches the first page of Hacker News `/news`, extracts story data (title, url, domain, points, submitter, age, comment count) and persists to SQLite.
 
-**Independent Test**: Run `uv run scrapy crawl hn_stories -a max_pages=1` and verify ~30 stories are persisted in SQLite via `sqlite3 hn_stories.db "SELECT COUNT(*) FROM stories;"`
+**Independent Test**: Run `uv run scrapy crawl hn_stories -a max_pages=1` and verify ~30 stories are persisted in SQLite via `sqlite3 hn.db "SELECT COUNT(*) FROM stories;"`
 
 ### Implementation for User Story 1
 
@@ -71,7 +71,7 @@ description: "Implementation tasks for the Scrapy Story Spider feature"
 
 **Goal**: The scraper follows pagination links (`/news?p=2`, `/news?p=3`) up to a configured page limit, collecting stories from all pages.
 
-**Independent Test**: Run `uv run scrapy crawl hn_stories -a max_pages=3` and verify stories from pages 1, 2, and 3 are persisted with correct `page_number` via `sqlite3 hn_stories.db "SELECT page_number, COUNT(*) FROM stories GROUP BY page_number;"`
+**Independent Test**: Run `uv run scrapy crawl hn_stories -a max_pages=3` and verify stories from pages 1, 2, and 3 are persisted with correct `page_number` via `sqlite3 hn.db "SELECT page_number, COUNT(*) FROM stories GROUP BY page_number;"`
 
 ### Implementation for User Story 2
 
@@ -175,8 +175,8 @@ uv sync                                   # Verify dependencies
 uv run scrapy list                        # Verify spider registered
 uv run scrapy crawl hn_stories -a max_pages=1   # US1 validation
 uv run scrapy crawl hn_stories -a max_pages=3   # US2 validation
-sqlite3 hn_stories.db "SELECT COUNT(*) FROM stories;"  # Verify persistence
-sqlite3 hn_stories.db "SELECT title, points, page_number FROM stories LIMIT 5;"  # Spot check
+sqlite3 hn.db "SELECT COUNT(*) FROM stories;"  # Verify persistence
+sqlite3 hn.db "SELECT title, points, page_number FROM stories LIMIT 5;"  # Spot check
 ```
 
 ---

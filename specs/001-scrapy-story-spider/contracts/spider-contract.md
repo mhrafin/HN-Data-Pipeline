@@ -16,8 +16,6 @@ class StoryItem(scrapy.Item):
     submitted_by = scrapy.Field()    # str | None: username
     submitted_ago = scrapy.Field()   # str: raw relative time text
     comment_count = scrapy.Field()   # int | None: parsed, 0 = "discuss"
-    hn_position = scrapy.Field()     # int: 1-based row position
-    page_number = scrapy.Field()     # int: page number being crawled
 ```
 
 ## 2. Pipeline Contract
@@ -41,7 +39,7 @@ The Scrapy `settings.py` must expose:
 
 | Setting | Type | Default | Purpose |
 |---------|------|---------|---------|
-| `DATABASE_URL` | str | `sqlite:///hn_stories.db` | SQLAlchemy connection string |
+| `DATABASE_URL` | str | `sqlite:///hn.db` | SQLAlchemy connection string |
 | `DEFAULT_CRAWL_DEPTH` | int | `1` | Max pages to crawl |
 | `STORYSPIDER_START_PAGE` | str | `/news` | Start URL path |
 

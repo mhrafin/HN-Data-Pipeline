@@ -20,7 +20,7 @@ class Story(Base):
     domain = Column(String, nullable=True)
     points = Column(Integer, nullable=True)
     submitted_by = Column(String, nullable=True)
-    submitted_ago = Column(String, nullable=False)
+    submitted_time = Column(DateTime, nullable=False)
     comment_count = Column(Integer, nullable=True)
     created_at = Column(DateTime, nullable=False, default=func.now())
 

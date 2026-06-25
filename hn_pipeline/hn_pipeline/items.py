@@ -13,5 +13,5 @@ class StoryItem(scrapy.Item):
     domain = scrapy.Field()
     points = scrapy.Field()
     submitted_by = scrapy.Field()
-    submitted_ago = scrapy.Field()
+    submitted_time = scrapy.Field()
     comment_count = scrapy.Field()

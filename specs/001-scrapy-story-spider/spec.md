@@ -16,7 +16,7 @@
 - Q: Should the scraper deduplicate stories across the entire multi-page crawl? → A: No dedup in the scraper; database enforces uniqueness — duplicate inserts are silently skipped.
 - Q: How should the scraper handle transient HTTP errors (429, 503, timeout)? → A: 3 retries with exponential backoff starting at 30s (30s → 60s → 120s), then abort the page after exhaustion.
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Scrape Front Page of /news (Priority: P1)
 
@@ -71,7 +71,7 @@ The developer runs the scraper and it respects the target domain's crawling poli
 - What happens when the "More" link is missing or malformed on the last page?
 - How does the system behave when an unexpected pagination parameter is encountered?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -86,12 +86,12 @@ The developer runs the scraper and it respects the target domain's crawling poli
 - **FR-009**: The scraper MUST support configurable crawl depth (maximum number of pages to traverse).
 - **FR-010**: The scraper MUST use idempotent inserts so that re-storing an already-existing story is silently handled (no crash, no duplicate).
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Story**: A Hacker News submission appearing on /news. Attributes include: title, URL, author, points, comment count, timestamp, position on page, and unique story ID. Persisted as a record in the database with uniqueness enforced by the database layer.
 - **Page**: A single page of /news results. A page contains a list of stories and an optional link to the next page.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

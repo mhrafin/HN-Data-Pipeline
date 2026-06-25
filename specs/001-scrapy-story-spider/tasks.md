@@ -59,9 +59,9 @@ description: "Implementation tasks for the Scrapy Story Spider feature"
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Implement StorySpider class with `name="hn_stories"`, start request to `/news`, and `parse` method that extracts stories from each `.athing` row using CSS selectors in `hn_pipeline/spiders/story_spider.py` — extract `hn_id` from `tr.athing` id attr, `title` and `url` from `span.titleline > a`, `domain` from `span.titleline > span.sitestr`, `points` from `span.score`, `submitted_by` from `a.hnuser`, `submitted_ago` from `span.age` title attr, `comment_count` from comment link text
-- [ ] T009 [US1] Implement StoryPipeline with `open_spider` (create session), `process_item` (map StoryItem to Story ORM model, insert, catch IntegrityError and log duplicate to StoryDedupLog), and `close_spider` (close session) in `hn_pipeline/pipelines.py`
-- [ ] T010 [US1] Wire up `ITEM_PIPELINES` with `StoryPipeline` and enable duplicate filter logging in `hn_pipeline/settings.py`
+- [x] T008 [US1] Implement StorySpider class with `name="hn_stories"`, start request to `/news`, and `parse` method that extracts stories from each `.athing` row using CSS selectors in `hn_pipeline/spiders/story_spider.py` — extract `hn_id` from `tr.athing` id attr, `title` and `url` from `span.titleline > a`, `domain` from `span.titleline > span.sitestr`, `points` from `span.score`, `submitted_by` from `a.hnuser`, `submitted_time` from `span.age` title attr, `comment_count` from comment link text
+- [x] T009 [US1] Implement StoryPipeline with `open_spider` (create session), `process_item` (map StoryItem to Story ORM model, insert, catch IntegrityError and log duplicate to StoryDedupLog), and `close_spider` (close session) in `hn_pipeline/pipelines.py`
+- [x] T010 [US1] Wire up `ITEM_PIPELINES` with `StoryPipeline` and enable duplicate filter logging in `hn_pipeline/settings.py`
 
 **Checkpoint**: At this point, User Story 1 should be fully functional. Run the independent test to verify ~30 stories persisted with all fields populated.
 

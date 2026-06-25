@@ -6,18 +6,18 @@ The core entity representing a Hacker News submission on the `/news` page.
 
 ### Fields
 
-| Field           | Type                | Source                               | Constraints             | Notes                                                                                   |
-| --------------- | ------------------- | ------------------------------------ | ----------------------- | --------------------------------------------------------------------------------------- |
-| `id`            | Integer (PK, auto)  | Generated                            | AUTOINCREMENT, unique   | Internal DB primary key                                                                 |
-| `hn_id`         | String              | HTML `tr.athing#ID`                  | NOT NULL, UNIQUE        | HN's story ID from the `id` attribute on the row                                        |
-| `title`         | String              | `td.title .titleline > a` text       | NOT NULL                | Full story title text                                                                   |
-| `url`           | String              | `td.title .titleline > a` href       | NOT NULL, UNIQUE        | The submitted URL (or `item?id=` for Ask HN etc.)                                       |
-| `domain`        | String              | `span.titleline > span.sitestr` text | NULLABLE                | Domain as displayed on HN (e.g., `example.com`). NULL for self-posts (Ask HN, Show HN). |
-| `points`        | Integer             | `span.score` text                    | NULLABLE                | e.g., "123 points" → 123. NULL if score hidden/deleted.                                 |
-| `submitted_by`  | String              | `a.hnuser` text                      | NULLABLE                | HN username of submitter. NULL for flagged/dead.                                        |
-| `submitted_ago` | String              | `span.age` title attribute           | NOT NULL                | Raw relative time text (e.g., "2 hours ago")                                            |
-| `comment_count` | Integer             | Comment link text                    | NULLABLE                | e.g., "12 comments" → 12, "discuss" → 0, NULL if missing                                |
-| `created_at`    | DateTime (ISO 8601) | Generated on insert                  | NOT NULL, default NOW() | When the record was inserted into the DB                                                |
+| Field            | Type                | Source                               | Constraints             | Notes                                                                                  |
+| :--------------- | ------------------- | ------------------------------------ | ----------------------- | -------------------------------------------------------------------------------------- |
+| `id`             | Integer (PK, auto)  | Generated                            | AUTOINCREMENT, unique   | Internal DB primary key                                                                |
+| `hn_id`          | String              | HTML`tr.athing#ID`                   | NOT NULL, UNIQUE        | HN's story ID from the`id` attribute on the row                                        |
+| `title`          | String              | `td.title .titleline > a` text       | NOT NULL                | Full story title text                                                                  |
+| `url`            | String              | `td.title .titleline > a` href       | NOT NULL, UNIQUE        | The submitted URL (or`item?id=` for Ask HN etc.)                                       |
+| `domain`         | String              | `span.titleline > span.sitestr` text | NULLABLE                | Domain as displayed on HN (e.g.,`example.com`). NULL for self-posts (Ask HN, Show HN). |
+| `points`         | Integer             | `span.score` text                    | NULLABLE                | e.g., "123 points" → 123. NULL if score hidden/deleted.                                |
+| `submitted_by`   | String              | `a.hnuser` text                      | NULLABLE                | HN username of submitter. NULL for flagged/dead.                                       |
+| `submitted_time` | DateTime            | `span.age` title attribute           | NOT NULL                | Parsed from`title` attr (e.g., `2026-06-23T23:42:46 1782258166` → datetime)            |
+| `comment_count`  | Integer             | Comment link text                    | NULLABLE                | e.g., "12 comments" → 12, "discuss" → 0, NULL if missing                               |
+| `created_at`     | DateTime (ISO 8601) | Generated on insert                  | NOT NULL, default NOW() | When the record was inserted into the DB                                               |
 
 ### Indexes
 
@@ -38,7 +38,7 @@ class Story(Base):
     domain = Column(String, nullable=True)
     points = Column(Integer, nullable=True)
     submitted_by = Column(String, nullable=True)
-    submitted_ago = Column(String, nullable=False)
+    submitted_time = Column(DateTime, nullable=False)
     comment_count = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=func.now(), nullable=False)
 ```

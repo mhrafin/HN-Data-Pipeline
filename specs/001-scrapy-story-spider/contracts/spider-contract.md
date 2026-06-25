@@ -14,7 +14,7 @@ class StoryItem(scrapy.Item):
     domain = scrapy.Field()          # str | None: parsed domain
     points = scrapy.Field()          # int | None: parsed from "N points"
     submitted_by = scrapy.Field()    # str | None: username
-    submitted_ago = scrapy.Field()   # str: raw relative time text
+    submitted_time = scrapy.Field()  # str: ISO datetime parsed from span.age title attr
     comment_count = scrapy.Field()   # int | None: parsed, 0 = "discuss"
 ```
 

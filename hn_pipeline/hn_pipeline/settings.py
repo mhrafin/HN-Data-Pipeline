@@ -59,9 +59,9 @@ RANDOMIZE_DOWNLOAD_DELAY = False
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-# ITEM_PIPELINES = {
-#    "hn_pipeline.pipelines.HnPipelinePipeline": 300,
-# }
+ITEM_PIPELINES = {
+    "hn_pipeline.pipelines.StoryPipeline": 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

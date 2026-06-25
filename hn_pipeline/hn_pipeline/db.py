@@ -2,8 +2,11 @@
 from sqlalchemy import create_engine
 from scrapy.settings import Settings
 from sqlalchemy.orm import sessionmaker
+from scrapy.utils.project import get_project_settings
 
-engine = create_engine(Settings.get("DATABASE_URL"), echo=True, future=True)
+settings = get_project_settings()
+
+engine = create_engine(settings.get("DATABASE_URL"), echo=True, future=True)
 
 Session = sessionmaker(bind=engine)
 

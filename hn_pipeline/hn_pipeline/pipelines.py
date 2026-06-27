@@ -40,14 +40,14 @@ class StoryPipeline:
             adapter["submitted_time"] = None
 
         # Get comments_count_raw and convert it to an integer if it exists
-        print(f"Raw comments count: {adapter.get('comments_count_raw')}")
+        # print(f"Raw comments count: {adapter.get('comments_count_raw')}")
         if adapter.get("comments_count_raw"):
             match = re.search(r"(\d+)", adapter.get("comments_count_raw"))
-            print(f"Match found: {match}")
+            # print(f"Match found: {match}")
             result = match.group() if match else None
-            print(f"Result: {result}")
+            # print(f"Result: {result}")
             adapter["comments_count"] = int(result) if result else 0
-            print(f"Final comments count: {adapter['comments_count']}")
+            # print(f"Final comments count: {adapter['comments_count']}")
         else:
             adapter["comments_count"] = 0
 

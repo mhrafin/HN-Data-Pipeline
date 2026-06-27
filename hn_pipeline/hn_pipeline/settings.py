@@ -42,14 +42,14 @@ RANDOMIZE_DOWNLOAD_DELAY = False
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 # SPIDER_MIDDLEWARES = {
-#    "hn_pipeline.middlewares.HnPipelineSpiderMiddleware": 543,
+#     "hn_pipeline.middlewares.StorySpiderMiddleware": 543,
 # }
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-# DOWNLOADER_MIDDLEWARES = {
-#    "hn_pipeline.middlewares.HnPipelineDownloaderMiddleware": 543,
-# }
+DOWNLOADER_MIDDLEWARES = {
+    "hn_pipeline.middlewares.StorySpiderRetryMiddleware": 543,
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -95,3 +95,7 @@ DEFAULT_CRAWL_DEPTH = 1
 
 # StorySpider settings
 STORYSPIDER_START_PAGE = "/news"
+
+# RetryMiddleware settings
+RETRY_TIMES = 3
+RETRY_HTTP_CODES = [429, 503]

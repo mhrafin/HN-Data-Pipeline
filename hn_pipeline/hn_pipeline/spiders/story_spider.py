@@ -10,10 +10,12 @@ class StorySpider(scrapy.Spider):
     allowed_domains = ["news.ycombinator.com"]
     start_urls = ["https://news.ycombinator.com/news"]
 
-    def __init__(self, max_pages: int = None, *args, **kwargs):
+    def __init__(self, max_pages=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         settings = Settings()
-        self.max_pages: int = max_pages or settings.getint("DEFAULT_CRAWL_DEPTH", 1)
+        print(f"Max pages set to: {max_pages}")
+        self.max_pages = max_pages or settings.getint("DEFAULT_CRAWL_DEPTH", 1)
+        print(f"Max pages set to: {self.max_pages}")
         self.pages_crawled = 0
 
     def parse(self, response):
@@ -50,9 +52,12 @@ class StorySpider(scrapy.Spider):
             # comments_count_raw = second_part.xpath(
             #     '//span[@class="subline"]//a[contains(text(), "comment")]//text()'
             # ).get()
-            comments_count_raw = second_part.css(
-                '.subline a[href^="item?id"]::text'
-            ).getall()[-1]
+            try:
+                comments_count_raw = second_part.css(
+                    '.subline a[href^="item?id"]::text'
+                ).getall()[-1]
+            except IndexError:
+                comments_count_raw = "0"
             yield {
                 "hn_id": hn_id,
                 "title": title,
@@ -63,3 +68,16 @@ class StorySpider(scrapy.Spider):
                 "submitted_time_raw": submitted_time_raw,
                 "comments_count_raw": comments_count_raw,
             }
+
+        self.pages_crawled += 1
+
+        more_link = response.css("a.morelink").attrib.get("href", " ")
+        # Print the condition to check if the spider should continue crawling
+        print(
+            f"More link: {more_link}, Pages crawled: {self.pages_crawled}, Max pages: {self.max_pages}"
+        )
+        if more_link != " ":
+            next_page_url = response.urljoin(more_link)
+            # if max_pages is 0, it means no limit on pages to crawl
+            if (self.pages_crawled < int(self.max_pages)) or (int(self.max_pages) == 0):
+                yield scrapy.Request(next_page_url, callback=self.parse)

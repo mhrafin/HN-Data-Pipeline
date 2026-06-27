@@ -75,8 +75,8 @@ description: "Implementation tasks for the Scrapy Story Spider feature"
 
 ### Implementation for User Story 2
 
-- [ ] T011 [US2] Add pagination logic to StorySpider `parse` method — detect `a.morelink`, extract `href` query param `?p=N+1`, yield `scrapy.Request` for next page if within `max_pages` limit, gracefully stop when no `a.morelink` exists
-- [ ] T012 [US2] Add `max_pages` constructor arg to StorySpider (default from `DEFAULT_CRAWL_DEPTH` setting, overrideable via `-a max_pages=N`) and pass `page_number` metadata on each request for correct page tracking
+- [x] T011 [US2] Add pagination logic to StorySpider `parse` method — detect `a.morelink`, extract `href` query param `?p=N+1`, yield `scrapy.Request` for next page if within `max_pages` limit, gracefully stop when no `a.morelink` exists
+- [x] T012 [US2] Add `max_pages` constructor arg to StorySpider (default from `DEFAULT_CRAWL_DEPTH` setting, overrideable via `-a max_pages=N`) and pass `page_number` metadata on each request for correct page tracking
 
 **Checkpoint**: User Stories 1 AND 2 work. Multi-page crawl persists stories from all pages.
 

@@ -19,6 +19,8 @@ class StoryPipeline:
         self.session = Session()
         init_db()
 
+        spider.logger.info("Database session started for StoryPipeline.")
+
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
 
@@ -66,7 +68,9 @@ class StoryPipeline:
         try:
             self.session.add(story)
             self.session.commit()
-            spider.logger.info(f"Story {story.hn_id} added to the database.")
+            spider.logger.info(
+                f"Story {story.title} - {story.url} added to the database."
+            )
         except IntegrityError:
             self.session.rollback()
             dup = StoryDedupLog(
@@ -77,10 +81,11 @@ class StoryPipeline:
             self.session.add(dup)
             self.session.commit()
             spider.logger.info(
-                f"Story {story.hn_id} already exists. Added to dedup log."
+                f"Story {story.title} - {story.url} already exists. Added to dedup log."
             )
 
         return item
 
     def close_spider(self, spider):
         self.session.close()
+        spider.logger.info("Spider closed. Database session terminated.")

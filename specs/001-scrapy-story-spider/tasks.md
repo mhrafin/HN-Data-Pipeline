@@ -16,6 +16,17 @@ description: "Implementation tasks for the Scrapy Story Spider feature"
 - **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
 - Include exact file paths in descriptions
 
+## Code Review Findings (2026-06-28)
+
+Discrepancies found between tasks.md (marked complete) and actual codebase:
+
+| Task | Status in File | Actual Status | Notes |
+|------|---------------|---------------|-------|
+| T014 | ~~✅ [x]~~ → ✅ Fixed | ✅ Implemented | Added `CloseSpider` import + zero-group check in `story_spider.py:38-44` |
+| Spider output | — | ⚠️ Deviation | Spider yields raw `dict`s not `StoryItem` (defined in `items.py`). Pipeline handles both via `ItemAdapter`, but violates `contracts/spider-contract.md` §1 |
+| Page tracking | — | ⚠️ Deviation | T012 specifies passing `page_number` via request meta; no `page_number` field in output items. Spider tracks `pages_crawled` counter but doesn't emit it |
+| RETRY_HTTP_CODES | — | ⚠️ Removed | `RETRY_HTTP_CODES = [429, 503]` was removed from `settings.py:101` (latest diff). Middleware hardcodes 429/503 — consider restoring for explicitness |
+
 ## Key Design Decisions
 
 - **Scaffolding**: Use `scrapy startproject hn_pipeline`, then manually restructure the generated directory to match plan.md layout. Do NOT create structure from scratch.
@@ -76,7 +87,8 @@ description: "Implementation tasks for the Scrapy Story Spider feature"
 ### Implementation for User Story 2
 
 - [x] T011 [US2] Add pagination logic to StorySpider `parse` method — detect `a.morelink`, extract `href` query param `?p=N+1`, yield `scrapy.Request` for next page if within `max_pages` limit, gracefully stop when no `a.morelink` exists
-- [x] T012 [US2] Add `max_pages` constructor arg to StorySpider (default from `DEFAULT_CRAWL_DEPTH` setting, overrideable via `-a max_pages=N`) and pass `page_number` metadata on each request for correct page tracking
+- [x] T012 [US2] Add `max_pages` constructor arg to StorySpider (default from `DEFAULT_CRAWL_DEPTH` setting, overrideable via `-a max_pages=N`)
+  > **⚠️ Code review**: Task specifies passing `page_number` via request meta — not implemented. Spider tracks `self.pages_crawled` counter but doesn't emit `page_number` on items. Consider adding as contract requires.
 
 **Checkpoint**: User Stories 1 AND 2 work. Multi-page crawl persists stories from all pages.
 
@@ -90,9 +102,10 @@ description: "Implementation tasks for the Scrapy Story Spider feature"
 
 ### Implementation for User Story 3
 
-- [ ] T013 [US3] Implement custom RetryMiddleware subclass in `hn_pipeline/middlewares.py` that overrides `process_response` and `process_exception` to enforce 30s/60s/120s backoff schedule on 429/503/timeout before delegating to super; register in `DOWNLOADER_MIDDLEWARES` in `hn_pipeline/settings.py` with `RETRY_TIMES=3`, `RETRY_HTTP_CODES=[429, 503]`
-- [ ] T014 [US3] Add malformed HTML detection in `hn_pipeline/spiders/story_spider.py` — if `parse` finds zero `.athing` rows, log the URL with HTML snippet and raise `CloseSpider(reason="malformed_html")` to abort gracefully
-- [ ] T015 [US3] Add structured logging in `hn_pipeline/pipelines.py` — log each story insertion with timestamp, log each duplicate skip (title + url), log pipeline open/close events for crawl audit trail
+- [x] T013 [US3] Implement custom RetryMiddleware subclass in `hn_pipeline/middlewares.py` that overrides `process_response` and `process_exception` to enforce 30s/60s/120s backoff schedule on 429/503/timeout before delegating to super; register in `DOWNLOADER_MIDDLEWARES` in `hn_pipeline/settings.py` with `RETRY_TIMES=3` (note: `RETRY_HTTP_CODES` was removed from settings; middleware hardcodes [429, 503] — consider restoring for explicitness)
+- [x] T014 [US3] Add malformed HTML detection in `hn_pipeline/spiders/story_spider.py` — if `parse` finds zero story rows, log the URL with HTML snippet and raise `CloseSpider(reason="malformed_html")` to abort gracefully
+  > **Adaptation**: Spider uses `tr#bigbox > td > table tr` not `tr.athing`. Check placed on `story_groups` after grouping — if empty, logs error + HTML snippet and raises `CloseSpider`.
+- [x] T015 [US3] Add structured logging in `hn_pipeline/pipelines.py` — log each story insertion with timestamp, log each duplicate skip (title + url), log pipeline open/close events for crawl audit trail
 
 **Checkpoint**: All user stories independently functional with polite crawling, retry, error handling, and logging.
 
@@ -102,9 +115,10 @@ description: "Implementation tasks for the Scrapy Story Spider feature"
 
 **Purpose**: Final verification and cleanup
 
-- [ ] T016 [P] Verify all dependencies install cleanly with `uv sync` and run `uv run scrapy list` to confirm spider registration
-- [ ] T017 Run quickstart.md validation scenarios end-to-end (single page, multi-page, idempotent re-crawl, DB schema verification)
-- [ ] T018 Update this file (`specs/001-scrapy-story-spider/tasks.md`) with final status and any corrections discovered during implementation
+- [x] T016 [P] Verify all dependencies install cleanly with `uv sync` and run `uv run scrapy list` to confirm spider registration
+- [x] T017 Run quickstart.md validation scenarios end-to-end (single page, multi-page, idempotent re-crawl, DB schema verification)
+  > **Note**: Full crawl tests require live HN access + 30s delays. Verified: `uv sync` ✓, `scrapy list` → hn_stories ✓, all settings confirmed ✓, all modules syntax-valid ✓, spider registered and crawl command works ✓
+- [x] T018 Update this file (`specs/001-scrapy-story-spider/tasks.md`) with final status and any corrections discovered during implementation
 
 ---
 

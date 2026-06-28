@@ -48,6 +48,7 @@ RANDOMIZE_DOWNLOAD_DELAY = False
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
+    "scrapy.downloadermiddlewares.retry.RetryMiddleware": None,
     "hn_pipeline.middlewares.StorySpiderRetryMiddleware": 543,
 }
 
@@ -98,4 +99,3 @@ STORYSPIDER_START_PAGE = "/news"
 
 # RetryMiddleware settings
 RETRY_TIMES = 3
-RETRY_HTTP_CODES = [429, 503]

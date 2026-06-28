@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import scrapy
+from scrapy.exceptions import CloseSpider
 from scrapy.settings import Settings
 from scrapy import Selector
 
@@ -33,6 +34,14 @@ class StorySpider(scrapy.Spider):
                     current_story = []
             else:
                 current_story.append(row)
+
+        if not story_groups:
+            snippet = response.text[:500]
+            self.logger.error(
+                f"Malformed HTML on {response.url} — no story rows found. "
+                f"HTML snippet: {snippet}"
+            )
+            raise CloseSpider("malformed_html")
 
         for story in story_groups:
             first_part = story[0]
